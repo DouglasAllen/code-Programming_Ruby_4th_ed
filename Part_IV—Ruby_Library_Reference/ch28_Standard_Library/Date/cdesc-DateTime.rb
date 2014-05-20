@@ -10,7 +10,7 @@ p DateTime.new(2001,2,3.5)                         #=> #<DateTime: 2001-02-03T12
 p DateTime.new(2001,2,3,4,5,6,Rational(3,24))      #=> #<DateTime: 2001-02-03T04:05:06+03:00 ((2451944j,3906s,0n),+10800s,2299161j)>
 p DateTime.new(2001,2,3,4,5,6,'+03:00')            #=> #<DateTime: 2001-02-03T04:05:06+03:00 ((2451944j,3906s,0n),+10800s,2299161j)>
 
-d = DateTime.parse('3rd Feb 2001 04:05:06+03:30')  
+p d = DateTime.parse('3rd Feb 2001 04:05:06+03:30')  
 p d.hour                                           #=> 4
 p d.min                                            #=> 5
 p d.sec                                            #=> 6

@@ -48,23 +48,26 @@ a rich interface. Consult the ri documentation for details. The introductory not
 lib/date.rb in the Ruby source tree are also well worth reading.
 
 • Experiment with various representations:
+
 require 'date'
 
 d = Date.new(2000, 3, 31)
 d = Date.today
 p [d.year, d.month, d.day]
 p [d.yday, d.mday, d.wday]
-
 p [d.cwyear, d.cweek, d.cwday]
 p [d.jd, d.mjd]
+
 d1 = Date.commercial(d.cwyear, d.cweek, d.cwday)
 p d1.to_s
 p [d1.cwday, d1.wday]
+
 :note see ex1424.rb
 
 • Essential information about Christmas:
 
 require 'date'
+
 now = DateTime.now
 year = now.year
 year += 1 if now.month == 12 && now.day > 25
@@ -77,12 +80,12 @@ m = ((h / 24.0 - (h / 24.0).to_i) * 24 - ((h / 24.0 - (h / 24.0).to_i) * 24).to_
 s = (m - m.to_i) * 60.0
 
 puts "That's #{h.to_i} hours, #{m.to_i} minutes, #{s} seconds"
-
 puts "Christmas #{year} falls on a #{xmas.strftime('%A')}"
 
 :note see ex1425.rb
+</pre>
 <pre>
-<h2>Terms and definitions</h2>
+<h2>Definitions of Terms</h2>
   Some terms and definitions are based on ISO 8601 and JIS X 0301.
 <h3>calendar date</h3>
   The calendar date is a particular day of a calendar year, identified by its ordinal number
@@ -164,12 +167,12 @@ $ ruby sample/cal.rb -c gb  9 1752
 
   Date object has various methods. See each reference.
 
-d = Date.parse('3rd Feb 2001')                     #=> #&lt;Date: 2001-02-03 ...>
+d = Date.parse('3rd Feb 2001')                     #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
 d.year                                             #=> 2001
 d.mon                                              #=> 2
 d.mday                                             #=> 3
 d.wday                                             #=> 6
-d += 1                                             #=> #&lt;Date: 2001-02-04 ...>
+d += 1                                             #=> #&lt;Date: 2001-02-04 ((2451945j,0s,0n),+0s,2299161j)>
 d.strftime('%a %d %b %Y')                          #=> "Sun 04 Feb 2001"
 :note see cdesc-Date.rb
 </pre>
@@ -182,28 +185,33 @@ DateTime.commercial, DateTime.parse, DateTime.strptime, DateTime.now, Time#to_da
 etc.
 
 require 'date'
+
+p DateTime.public_methods(false).sort
+[:_strptime, :civil, :commercial, :httpdate, :iso8601, :jd, :jisx0301, 
+ :new, :now, :ordinal, :parse, :rfc2822, :rfc3339, :rfc822, :strptime, :xmlschema]
+
 p DateTime.instance_methods(false).sort
 [:hour, :iso8601, :jisx0301, :min, :minute, :new_offset, 
  :offset, :rfc3339, :sec, :sec_fraction, :second, :second_fraction, 
  :strftime, :to_date, :to_datetime, :to_s, :to_time, :xmlschema, :zone]
  
-DateTime.new(2001,2,3,4,5,6)                       #=> #&lt;DateTime: 2001-02-03T04:05:06+00:00 ...>
+DateTime.new(2001,2,3,4,5,6)                       #=> #&lt;DateTime: 2001-02-03T04:05:06+00:00 ((2451944j,14706s,0n),+0s,2299161j)>
 
   The last element of day, hour, minute or senond can be fractional number. 
 The fractional number’s precision is assumed at most nanosecond.
 
-DateTime.new(2001,2,3.5)                           #=> #&lt;DateTime: 2001-02-03T12:00:00+00:00 ...>
+DateTime.new(2001,2,3.5)                           #=> #&lt;DateTime: 2001-02-03T12:00:00+00:00 ((2451944j,43200s,0.0n),+0s,2299161j)>
 
   An optional argument the offset indicates the difference between the local time and UTC. 
 For example, Rational(3,24) represents ahead of 3 hours of UTC, Rational(-5,24) represents 
 behind of 5 hours of UTC. The offset should be -1 to +1, and its precision is assumed at 
 most second. The default value is zero (equals to UTC).
 
-DateTime.new(2001,2,3,4,5,6,Rational(3,24))        #=> #&lt;DateTime: 2001-02-03T04:05:06+03:00 ...>
+DateTime.new(2001,2,3,4,5,6,Rational(3,24))        #=> #&lt;DateTime: 2001-02-03T04:05:06+03:00 ((2451944j,3906s,0n),+10800s,2299161j)>
 
   also accepts string form.
 
-DateTime.new(2001,2,3,4,5,6,'+03:00')              #=> #&lt;DateTime: 2001-02-03T04:05:06+03:00 ...>
+DateTime.new(2001,2,3,4,5,6,'+03:00')              #=> #&lt;DateTime: 2001-02-03T04:05:06+03:00 ((2451944j,3906s,0n),+10800s,2299161j)>
 
   An optional argument the day of calendar reform (start) denotes a Julian day number, 
 which should be 2298874 to 2426355 or -/+oo. The default value is 
@@ -211,14 +219,14 @@ Date::ITALY (2299161=1582-10-15).
 
 DateTime object has various methods. See each reference.
 
-d = DateTime.parse('3rd Feb 2001 04:05:06+03:30')  #=> #&lt;DateTime: 2001-02-03T04:05:06+03:30 ...>
+d = DateTime.parse('3rd Feb 2001 04:05:06+03:30')  #=> #&lt;DateTime: 2001-02-03T04:05:06+03:30 ((2451944j,2106s,0n),+12600s,2299161j)>
 d.hour                                             #=> 4
 d.min                                              #=> 5
 d.sec                                              #=> 6
 d.offset                                           #=> (7/48)
 d.zone                                             #=> "+03:30"
-d += Rational('1.5')                               #=> #&lt;DateTime: 2001-02-04%16:05:06+03:30 ...>
-d = d.new_offset('+09:00')                         #=> #&lt;DateTime: 2001-02-04%21:35:06+09:00 ...>
+d += Rational('1.5')                               #=> #&lt;DateTime: 2001-02-04T16:05:06+03:30 ((2451945j,45306s,0n),+12600s,2299161j)>
+d = d.new_offset('+09:00')                         #=> #&lt;DateTime: 2001-02-04T21:35:06+09:00 ((2451945j,45306s,0n),+32400s,2299161j)>
 d.strftime('%I:%M:%S %p')                          #=> "09:35:06 PM"
 d > DateTime.new(1999)                             #=> true
 :note see cdesc-DateTime.rb
@@ -260,11 +268,13 @@ MONTHNAMES
 <pre>
 <h2>Public Class Methods</h2>
 p Date.public_methods(false).sort
-[:_httpdate, :_iso8601, :_jisx0301, :_load, :_parse, :_rfc2822, :_rfc3339, :_rfc822, 
+[:_httpdate, :_iso8601, :_jisx0301, :_parse, :_rfc2822, :_rfc3339, :_rfc822, 
  :_strptime, :_xmlschema, :civil, :commercial, :gregorian_leap?, :httpdate, :iso8601, 
  :jd, :jisx0301, :julian_leap?, :leap?, :new, :new!, :ordinal, :parse, :rfc2822, :rfc3339, 
  :rfc822, :strptime, :today, :valid_civil?, :valid_commercial?, :valid_date?, :valid_jd?, 
  :valid_ordinal?, :xmlschema]
+</pre>
+<pre>
 <h3>_httpdate(string)</h3>
 _httpdate(string) → hash
 
@@ -272,21 +282,39 @@ _httpdate(string) → hash
 
 require 'date'
 
-d = Date._httpdate('Tue, 15 Nov 1994 08:12:31 GMT')
-p d   #=>  {:zone=>"GMT", :hour=>8, :min=>12, :sec=>31, :wday=>2, :year=>1994, 
-            :mon=>11, :mday=>15, :offset=>0}
+dstr = 'Sat, 03 Feb 2001 00:00:00 GMT'
+
+d = Date::_httpdate(dstr)
+p d  #=> {:zone=>"GMT", :hour=>0, :min=>0, :sec=>0, :wday=>6,
+     #=>  :year=>2001, :mon=>2, :mday=>3, :offset=>0}
+     
+d = DateTime::_httpdate(dstr)
+p d  #=> {:zone=>"GMT", :hour=>0, :min=>0, :sec=>0, :wday=>6,
+     #=>  :year=>2001, :mon=>2, :mday=>3, :offset=>0}
+     
 :note see cm__httpdate.rb
+</pre>
+<pre>
 <h3>_iso8601(string)</h3>
 _iso8601(string) → hash
 
   Returns a hash of parsed elements.
   
 require 'date'
-  
-d = Date::_iso8601('1997-07-16T19:20:30.45+01:00')
+
+dstr = '1997-07-16T19:20:30.45-01:00'
+
+d = Date::_iso8601(dstr)
 p d  #=> {:mday=>16, :year=>1997, :mon=>7, :hour=>19, :min=>20, :sec=>30, 
-          :sec_fraction=>"45", :zone=>"+01:00", :offset=>3600}
-:note see cm__iso8601.rb          
+     #=>  :sec_fraction=>"45", :zone=>"-01:00", :offset=>-3600}
+     
+d = DateTime::_iso8601(dstr)
+p d  #=> {:mday=>16, :year=>1997, :mon=>7, :hour=>19, :min=>20, :sec=>30, 
+     #=>  :sec_fraction=>"45", :zone=>"-01:00", :offset=>-3600}
+     
+:note see cm__iso8601.rb
+</pre>
+<pre>          
 <h3>_jisx0301(string)</h3>
 _jisx0301(string) → hash
 
@@ -294,9 +322,19 @@ _jisx0301(string) → hash
   
 require 'date'
 
-d = Date::_jisx0301('H13.02.03T04:05:06+07:00')
-p d   #=> {:zone=>"+07:00", :hour=>4, :min=>5, :sec=>6, :year=>2001, 
-           :mon=>2, :mday=>3, :offset=>25200}
+dstr = 'H13.02.03T04:05:06+07:00'
+
+d = Date::_jisx0301(dstr)
+p d   #=> {:zone=>"+07:00", :hour=>4, :min=>5, :sec=>6, 
+      #=>  :year=>2001, :mon=>2, :mday=>3, :offset=>25200}
+
+d = DateTime::_jisx0301(dstr)
+p d   #=> {:zone=>"+07:00", :hour=>4, :min=>5, :sec=>6, 
+      #=>  :year=>2001, :mon=>2, :mday=>3, :offset=>25200}
+
+:note see cm__jisx0301.rb
+</pre>
+<pre>
 <h3>_parse(string[, comp=true])</h3>
 _parse(string[, comp=true]) → hash
 
@@ -305,33 +343,190 @@ This method does not function as a validator. If the optional second argument is
 the detected year is in the range “00” to “99”, considers the year a 2-digit form and makes
 it full.
 
-Date._parse('2001-02-03')                          #=> {:year=>2001, :mon=>2, :mday=>3}
+require 'date'
+
+dstr = '2001-02-03'
+d = Date::_parse(dstr)
+p d  #=> {:year=>2001, :mon=>2, :mday=>3}
+
+d = DateTime::_parse(dstr)
+p d  #=> {:year=>2001, :mon=>2, :mday=>3}
+
+:note see cm__parse.rb
+</pre>
+<pre>
 <h3>_rfc2822(string)</h3>
 _rfc2822(string) → hash
 
   Returns a hash of parsed elements.
+
+require 'date'
+
+string = "Wed, 02 Oct 2002 08:00:00 EST"
+
+d = Date::_rfc2822(string)
+p d   #=> {:zone=>"EST", :hour=>8, :min=>0, :sec=>0, :wday=>3, 
+      #=>  :year=>2002, :mon=>10, :mday=>2, :offset=>-18000}
+
+d = DateTime::_rfc2822(string)
+p d   #=> {:zone=>"EST", :hour=>8, :min=>0, :sec=>0, :wday=>3, 
+      #=>  :year=>2002, :mon=>10, :mday=>2, :offset=>-18000}
+      
+string = "Wed, 02 Oct 2002 13:00:00 GMT"
+      
+d = Date::_rfc2822(string)
+p d   #=> {:zone=>"GMT", :hour=>13, :min=>0, :sec=>0, :wday=>3, 
+      #=>  :year=>2002, :mon=>10, :mday=>2, :offset=>0}
+      
+d = DateTime::_rfc2822(string)
+p d   #=> {:zone=>"GMT", :hour=>13, :min=>0, :sec=>0, :wday=>3, 
+      #=>  :year=>2002, :mon=>10, :mday=>2, :offset=>0}      
+      
+string = "Wed, 02 Oct 2002 15:00:00 +0200"
+      
+d = Date::_rfc2822(string)
+p d   #=> {:zone=>"+0200", :hour=>15, :min=>0, :sec=>0, 
+      #=>  :wday=>3, :year=>2002, :mon=>10, :mday=>2, :offset=>7200}
+      
+d = DateTime::_rfc2822(string)
+p d   #=> {:zone=>"+0200", :hour=>15, :min=>0, :sec=>0, 
+      #=>  :wday=>3, :year=>2002, :mon=>10, :mday=>2, :offset=>7200}
+      
+:note see cm__rfc2822.rb
+</pre>
+<pre>
 <h3>_rfc3339(string)</h3>
 _rfc3339(string) → hash
 
   Returns a hash of parsed elements.
+
+require 'date'
+
+string = '2008-04-02T20:00:00Z'
+
+d = Date::_rfc3339(string)
+p d  #=> {:zone=>"Z", :hour=>20, :min=>0, :sec=>0, 
+     #=>  :year=>2008, :mon=>4, :mday=>2, :offset=>0}
+
+d = DateTime::_rfc3339(string)
+p d  #=> {:zone=>"Z", :hour=>20, :min=>0, :sec=>0, 
+     #=>  :year=>2008, :mon=>4, :mday=>2, :offset=>0}
+     
+:note see cm__rfc3339.rb
+</pre>
+<pre>
 <h3>_rfc822(string)</h3>
 _rfc822(string) → hash
 
   Returns a hash of parsed elements.
+  
+require 'date'
+
+string = "Wed, 02 Oct 2002 08:00:00 EST"
+
+d = Date::_rfc822(string)
+p d   #=> {:zone=>"EST", :hour=>8, :min=>0, :sec=>0, :wday=>3, 
+      #=>  :year=>2002, :mon=>10, :mday=>2, :offset=>-18000}
+
+d = DateTime::_rfc822(string)
+p d   #=> {:zone=>"EST", :hour=>8, :min=>0, :sec=>0, :wday=>3, 
+      #=>  :year=>2002, :mon=>10, :mday=>2, :offset=>-18000}
+      
+string = "Wed, 02 Oct 2002 13:00:00 GMT"
+      
+d = Date::_rfc822(string)
+p d   #=> {:zone=>"GMT", :hour=>13, :min=>0, :sec=>0, :wday=>3, 
+      #=>  :year=>2002, :mon=>10, :mday=>2, :offset=>0}
+      
+d = DateTime::_rfc822(string)
+p d   #=> {:zone=>"GMT", :hour=>13, :min=>0, :sec=>0, :wday=>3, 
+      #=>  :year=>2002, :mon=>10, :mday=>2, :offset=>0}      
+      
+string = "Wed, 02 Oct 2002 15:00:00 +0200"
+      
+d = Date::_rfc822(string)
+p d   #=> {:zone=>"+0200", :hour=>15, :min=>0, :sec=>0, 
+      #=>  :wday=>3, :year=>2002, :mon=>10, :mday=>2, :offset=>7200}
+      
+d = DateTime::_rfc822(string)
+p d   #=> {:zone=>"+0200", :hour=>15, :min=>0, :sec=>0, 
+      #=>  :wday=>3, :year=>2002, :mon=>10, :mday=>2, :offset=>7200}
+      
+:note see cm__rfc822.rb
+</pre>
+<pre>
 <h3>_strptime(string[, format='%F'])</h3>
 _strptime(string[, format='%F']) → hash
 
- Parses the given representation of date and time with the given template, and returns a hash
-of parsed elements. _strptime does not support specification of flags and width unlike 
-strftime.
+ Parses the given representation of date and time with the given template, and returns a hash of parsed elements.
 
-Date._strptime('2001-02-03', '%Y-%m-%d')           #=> {:year=>2001, :mon=>2, :mday=>3}
+ _strptime does not support specification of flags and width unlike strftime.
+
+require 'date'
+
+dstr = '2014-05-16 11:35:00 -05:00'
+fstr =  '%Y-%m-%d %H:%M:%S %Z'
+
+d = Date::_strptime(dstr)        
+p d  #=> {:year=>2014, :mon=>5, :mday=>16, :leftover=>" 11:35:00-05:00"}
+
+d = DateTime::_strptime(dstr) 
+p d  #=> nil
+
+d = Date::_strptime(dstr, '%F') 
+p d  #=> {:year=>2014, :mon=>5, :mday=>16, :leftover=>" 11:35:00 -05:00"}
+
+d = DateTime::_strptime(dstr, '%F') 
+p d  #=> {:year=>2014, :mon=>5, :mday=>16, :leftover=>" 11:35:00 -05:00"}
+
+d = Date::_strptime(dstr, fstr)
+p d  #=> {:year=>2014, :mon=>5, :mday=>16, :hour=>11, :min=>35, :sec=>0, 
+     #=>  :zone=>"-05:00", :offset=>-18000}
+ 
+d = DateTime::_strptime(dstr, fstr)
+p d  #=> {:year=>2014, :mon=>5, :mday=>16, :hour=>11, :min=>35, :sec=>0, 
+     #=>  :zone=>"-05:00", :offset=>-18000}
+
+dstr = '2014-05-16T11:35:00-05:00'
+
+d = Date::_strptime(dstr, '%F') 
+p d  #=> {:year=>2014, :mon=>5, :mday=>16, :leftover=>"T11:35:00-05:00"}
+
+d = DateTime::_strptime(dstr, '%F') 
+p d  #=> {:year=>2014, :mon=>5, :mday=>16, :leftover=>"T11:35:00-05:00"}
+
+d = Date::_strptime(dstr) 
+p d  #=> {:year=>2014, :mon=>5, :mday=>16, :leftover=>"T11:35:00-05:00"}
+
+d = DateTime::_strptime(dstr) 
+p d  #=> {:year=>2014, :mon=>5, :mday=>16, :hour=>11, :min=>35, :sec=>0, 
+     #=>  :zone=>"-05:00", :offset=>-18000}
+
+:note see cm__strptime.rb     
 
 See also strptime(3) and strftime.
+</pre>
+<pre> 
 <h3>_xmlschema(string)</h3>
 _xmlschema(string) → hash
 
   Returns a hash of parsed elements.
+  
+require 'date'
+
+dstr = '2014-05-16T11:35:00-05:00'
+
+d = Date::_xmlschema(dstr)
+p d  #=> {:year=>2014, :mon=>5, :mday=>16, :hour=>11, :min=>35, :sec=>0, 
+     #=>  :zone=>"-05:00", :offset=>-18000}
+     
+d = DateTime::_xmlschema(dstr)
+p d  #=> {:year=>2014, :mon=>5, :mday=>16, :hour=>11, :min=>35, :sec=>0, 
+     #=>  :zone=>"-05:00", :offset=>-18000}
+     
+:note see cm__xmlschema.rb
+</pre>
+<pre> 
 <h3>civil([year=-4712[, month=1[, mday=1[, start=Date::ITALY]]]])</h3>
 civil([year=-4712[, month=1[, mday=1[, start=Date::ITALY]]]]) → date
 
@@ -346,10 +541,31 @@ Date::ENGLAND (2361222=1752-09-14),
 Date::GREGORIAN (the proleptic Gregorian calendar) and 
 Date::JULIAN (the proleptic Julian calendar) can be specified as a day of calendar reform.
 
-Date.new(2001)                                     #=> #&lt;Date: 2001-01-01 ...>
-Date.new(2001,2,3)                                 #=> #&lt;Date: 2001-02-03 ...>
-Date.new(2001,2,-1)                                #=> #&lt;Date: 2001-02-28 ...>
+require 'date'
+
+d = Date::civil(2000)
+p d  #=> #&lt;Date: 2000-01-01 ((2451545j,0s,0n),+0s,2299161j)>
+
+d = Date::civil(2000,2,3)
+p d  #=> #&lt;Date: 2000-02-03 ((2451578j,0s,0n),+0s,2299161j)>
+
+d = Date::civil(2000,2,-1)
+p d  #=> #&lt;Date: 2001-02-28 ((2451969j,0s,0n),+0s,2299161j)>
+
+d = DateTime::civil(2000)
+p d  #=> #&lt;DateTime: 2001-01-01T00:00:00+00:00 ((2451911j,0s,0n),+0s,2299161j)>
+
+d = DateTime::civil(2000,2,3)
+p d  #=> #&lt;DateTime: 2001-02-03T00:00:00+00:00 ((2451944j,0s,0n),+0s,2299161j)>
+
+d = DateTime::civil(2000,2,-1)
+p d  #=> #&lt;DateTime: 2001-02-28T00:00:00+00:00 ((2451969j,0s,0n),+0s,2299161j)>                               
+
+:note see cm_civil.rb
+
 See also jd.
+</pre>
+<pre> 
 <h3>commercial([cwyear=-4712[, cweek=1[, cwday=1[, start=Date::ITALY]]]])</h3>
 commercial([cwyear=-4712[, cweek=1[, cwday=1[, start=Date::ITALY]]]]) → date
 
@@ -357,25 +573,60 @@ commercial([cwyear=-4712[, cweek=1[, cwday=1[, start=Date::ITALY]]]]) → date
 a negative or a positive number(as a relative week/day from the end of year/week when negative).
 They should not be zero.
 
-Date.commercial(2001)                              #=> #&lt;Date: 2001-01-01 ...>
-Date.commercial(2002)                              #=> #&lt;Date: 2001-12-31 ...>
-Date.commercial(2001,5,6)                          #=> #&lt;Date: 2001-02-03 ...>
+require 'date'
+
+d = Date::commercial(2001)
+p d  #=> #&lt;Date: 2001-01-01 ((2451911j,0s,0n),+0s,2299161j)>
+d = Date::commercial(2002)
+p d  #=> #&lt;Date: 2001-12-31 ((2452275j,0s,0n),+0s,2299161j)>
+d = Date::commercial(2001,5,6)
+p d  #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+                          
+d = DateTime::commercial(2001)
+p d  #=> #&lt;DateTime: 2001-01-01T00:00:00+00:00 ((2451911j,0s,0n),+0s,2299161j)>
+d = DateTime::commercial(2002)
+p d  #=> #&lt;DateTime: 2001-12-31T00:00:00+00:00 ((2452275j,0s,0n),+0s,2299161j)>
+d = DateTime::commercial(2001,5,6)
+p d  #=> #&lt;DateTime: 2001-02-03T00:00:00+00:00 ((2451944j,0s,0n),+0s,2299161j)>         
+
+:note see cm_commercial.rb
+
 See also jd and new.
+</pre>
+<pre> 
 <h3>gregorian_leap?(year)</h3>
 gregorian_leap?(year) → bool
 
   Returns true if the given year is a leap year of the proleptic Gregorian calendar.
 
-Date.gregorian_leap?(1900)                         #=> false
-Date.gregorian_leap?(2000)                         #=> true
+require 'date'
+
+b = Date.gregorian_leap?(1900)
+p b  #=> false
+b = Date.gregorian_leap?(2000)
+p b  #=> true
+
+:note see cm_gregorian_leap_bool.rb 
+</pre>
+<pre>
 <h3>httpdate(string='Mon, 01 Jan -4712 00:00:00 GMT'[, start=ITALY])</h3>
 httpdate(string='Mon, 01 Jan -4712 00:00:00 GMT'[, start=ITALY]) → date
 
   Creates a new Date object by parsing from a string according to some RFC 2616 format.
 
-d = Date::httpdate('Sat, 03 Feb 2001 00:00:00 GMT')
-p d  #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+require 'date'
+
+dstr = 'Sat, 03 Feb 2001 00:00:00 GMT'
+
+d = Date::httpdate(dstr)
+p d  #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>     
+
+d = DateTime::httpdate(dstr)
+p d  #=> #&lt;DateTime: 2001-02-03T00:00:00+00:00 ((2451944j,0s,0n),+0s,2299161j)>
+
 :note see cm__httpdate.rb
+</pre>
+<pre>
 <h3>iso8601(string='-4712-01-01'[, start=ITALY])</h3>
 iso8601(string='-4712-01-01'[, start=ITALY]) → date
 
@@ -384,22 +635,51 @@ formats.
 
 require 'date'
 
+dstr = '1997-07-16T19:20:30.45-01:00'
+
 d = Date::iso8601('2001-02-03')                         
 p d  #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
 d = Date::iso8601('20010203')                           
 p d  #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
 d = Date::iso8601('2001-W05-6')                         
 p d  #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+
+d = DateTime::iso8601('2001-02-03')                         
+p d  #=> #&lt;#DateTime: 2001-02-03T00:00:00+00:00 ((2451944j,0s,0n),+0s,2299161j)>
+d = DateTime::iso8601('20010203')                           
+p d  #=> #&lt;#DateTime: 2001-02-03T00:00:00+00:00 ((2451944j,0s,0n),+0s,2299161j)>
+d = DateTime::iso8601('2001-W05-6')                         
+p d  #=> #&lt;#DateTime: 2001-02-03T00:00:00+00:00 ((2451944j,0s,0n),+0s,2299161j)>
+
 :note see cm__iso8601.rb
+</pre>
+<pre>
 <h3>jd([jd=0[, start=Date::ITALY]])</h3>
 jd([jd=0[, start=Date::ITALY]]) → date
 
   Creates a date object denoting the given chronological Julian day number.
 
-Date.jd(2451944)                                   #=> #&lt;Date: 2001-02-03 ...>
-Date.jd(2451945)                                   #=> #&lt;Date: 2001-02-04 ...>
-Date.jd(0)                                         #=> #&lt;Date: -4712-01-01 ...>
+require 'date'
+
+d = Date::jd(2451944)
+p d  #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+d = Date::jd(2451945)
+p d  #=> #&lt;Date: 2001-02-04 ((2451945j,0s,0n),+0s,2299161j)>
+d = Date::jd(0)
+p d  #=> #&lt;Date: -4712-01-01 ((0j,0s,0n),+0s,2299161j)>
+
+d = DateTime::jd(2451944)
+p d  #=> #&lt;DateTime: 2001-02-03T00:00:00+00:00 ((2451944j,0s,0n),+0s,2299161j)>
+d = DateTime::jd(2451945)
+p d  #=> #&lt;DateTime: 2001-02-04T00:00:00+00:00 ((2451945j,0s,0n),+0s,2299161j)>
+d = DateTime::jd(0)
+p d  #=> #&lt;DateTime: -4712-01-01T00:00:00+00:00 ((0j,0s,0n),+0s,2299161j)>
+
+:note see cm_jd.rb
+ 
 See also new.
+</pre>
+<pre>
 <h3>jisx0301(string='-4712-01-01'[, start=ITALY])</h3>
 jisx0301(string='-4712-01-01'[, start=ITALY]) → date
 
@@ -408,24 +688,53 @@ formats.
 
 require 'date'
 
-d = Date::jisx0301('H13.02.03T04:05:06+07:00')
+dstr = 'H13.02.03T04:05:06+07:00'
+
+d = Date::jisx0301(dstr)
 p d   #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
 d = Date::jisx0301('H13.02.03')                         
 p d   #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+
+d = DateTime::jisx0301(dstr)
+p d   #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+d = DateTime::jisx0301('H13.02.03')                         
+p d   #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+
+:note see cm__jisx0301.rb
+</pre>
+<pre>
 <h3>julian_leap?(year)</h3>
 julian_leap?(year) → bool
 
   Returns true if the given year is a leap year of the proleptic Julian calendar.
 
-Date.julian_leap?(1900)                            #=> true
-Date.julian_leap?(1901)                            #=> false
+require 'date'
+  
+p Date.julian_leap?(1900)                            #=> true
+p Date.julian_leap?(1901)                            #=> false
+
+p DateTime.julian_leap?(1900)                        #=> true
+p DateTime.julian_leap?(1901)                        #=> false
+
+:note see cm_julian_leap_bool.rb
+</pre>
+<pre> 
 <h3>leap?(year)</h3>
 leap?(year) → bool
 
   Returns true if the given year is a leap year of the proleptic Gregorian calendar.
 
-Date.gregorian_leap?(1900)                         #=> false
-Date.gregorian_leap?(2000)                         #=> true
+require 'date'
+
+p Date::leap?(1900)                         #=> false
+p Date::leap?(2000)                         #=> true
+
+p DateTime::leap?(1900)                     #=> false
+p DateTime::leap?(2000)                     #=> true
+
+:note see cm_leap_bool.rb
+</pre>
+<pre> 
 <h3>new([year=-4712[, month=1[, mday=1[, start=Date::ITALY]]]])</h3>
 new([year=-4712[, month=1[, mday=1[, start=Date::ITALY]]]]) → date
 
@@ -440,10 +749,33 @@ Date::ENGLAND (2361222=1752-09-14),
 Date::GREGORIAN (the proleptic Gregorian calendar) and 
 Date::JULIAN (the proleptic Julian calendar) can be specified as a day of calendar reform.
 
-Date.new(2001)                                     #=> #&lt;Date: 2001-01-01 ...>
-Date.new(2001,2,3)                                 #=> #&lt;Date: 2001-02-03 ...>
-Date.new(2001,2,-1)                                #=> #&lt;Date: 2001-02-28 ...>
+require 'date'
+
+p Date::new(2001)                             #=> #&lt;Date: 2001-01-01 ...>
+p Date::new(2001,2,3)                         #=> #&lt;Date: 2001-02-03 ...>
+p Date::new(2001,2,-1)                        #=> #&lt;Date: 2001-02-28 ...>
+
+p DateTime::new(2001)                         #=> #&lt;Date: 2001-01-01 ...>
+p DateTime::new(2001,2,3)                     #=> #&lt;Date: 2001-02-03 ...>
+p DateTime::new(2001,2,-1)                    #=> #&lt;Date: 2001-02-28 ...>
+
+:note see cm_new.rb
+
 See also jd.
+</pre>
+<pre>
+<h3>now</h3>
+now([start=Date::ITALY]) → datetime
+
+  Creates a date-time object denoting the present time.
+
+require 'date'
+
+p DateTime::now                              #=> #&lt;DateTime: 2011-06-11T21:20:44+09:00 ...>
+
+:note see cm_now.rb
+</pre>
+<pre> 
 <h3>ordinal([year=-4712[, yday=1[, start=Date::ITALY]]])</h3>
 ordinal([year=-4712[, yday=1[, start=Date::ITALY]]]) → date
 
@@ -451,10 +783,21 @@ ordinal([year=-4712[, yday=1[, start=Date::ITALY]]]) → date
 or a positive number (as a relative day from the end of year when negative). It should not be
 zero.
 
-Date.ordinal(2001)                                 #=> #&lt;Date: 2001-01-01 ...>
-Date.ordinal(2001,34)                              #=> #&lt;Date: 2001-02-03 ...>
-Date.ordinal(2001,-1)                              #=> #&lt;Date: 2001-12-31 ...>
+require 'date'
+
+p Date::ordinal(2001)                        #=> #&lt;Date: 2001-01-01 ...>
+p Date::ordinal(2001,34)                     #=> #&lt;Date: 2001-02-03 ...>
+p Date::ordinal(2001,-1)                     #=> #&lt;Date: 2001-12-31 ...>
+
+p DateTime::ordinal(2001)                    #=> #&lt;Date: 2001-01-01 ...>
+p DateTime::ordinal(2001,34)                 #=> #&lt;Date: 2001-02-03 ...>
+p DateTime::ordinal(2001,-1)                 #=> #&lt;Date: 2001-12-31 ...>
+
+:note see cm_ordinal.rb
+
 See also jd and new.
+</pre>
+<pre> 
 <h3>parse(string='-4712-01-01'[, comp=true[, start=ITALY]])</h3>
 parse(string='-4712-01-01'[, comp=true[, start=ITALY]]) → date
 
@@ -462,95 +805,205 @@ parse(string='-4712-01-01'[, comp=true[, start=ITALY]]) → date
 does not function as a validator. If the optional second argument is true and the detected 
 year is in the range “00” to “99”, considers the year a 2-digit form and makes it full.
 
-Date.parse('2001-02-03')                           #=> #&lt;Date: 2001-02-03 ...>
-Date.parse('20010203')                             #=> #&lt;Date: 2001-02-03 ...>
-Date.parse('3rd Feb 2001')                         #=> #&lt;Date: 2001-02-03 ...>
-<h3>rfc2822(string='Mon, 1 Jan -4712 00:00:00 +0000'[, start=ITALY])</h3>
-rfc2822(string='Mon, 1 Jan -4712 00:00:00 +0000'[, start=ITALY]) → date
+require 'date'
 
-  Creates a new Date object by parsing from a string according to some typical RFC 2822 
-formats.
+p Date::parse('2001-02-03')                   #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+p Date::parse('20010203')                     #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+p Date::parse('3rd Feb 2001')                 #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
 
-Date.rfc2822('Sat, 3 Feb 2001 00:00:00 +0000')     #=> #&lt;Date: 2001-02-03 ...>
-<h3>rfc3339(string='-4712-01-01T00:00:00+00:00'[, start=ITALY])</h3>
-rfc3339(string='-4712-01-01T00:00:00+00:00'[, start=ITALY]) → date
+p DateTime::parse('2001-02-03')               #=> #&lt;DateTime: 2001-02-03T00:00:00+00:00 ((2451944j,0s,0n),+0s,2299161j)>
+p DateTime::parse('20010203')                 #=> #&lt;DateTime: 2001-02-03T00:00:00+00:00 ((2451944j,0s,0n),+0s,2299161j)>
+p DateTime::parse('3rd Feb 2001')             #=> #&lt;DateTime: 2001-02-03T00:00:00+00:00 ((2451944j,0s,0n),+0s,2299161j)>
 
-  Creates a new Date object by parsing from a string according to some typical RFC 3339 
-formats.
-
-Date.rfc3339('2001-02-03T04:05:06+07:00')          #=> #&lt;Date: 2001-02-03 ...>
+:note see cm__parse.rb
+</pre>
+<pre>
 <h3>rfc822(string='Mon, 1 Jan -4712 00:00:00 +0000'[, start=ITALY])</h3>
 rfc822(string='Mon, 1 Jan -4712 00:00:00 +0000'[, start=ITALY]) → date
 
   Creates a new Date object by parsing from a string according to some typical RFC 2822 
 formats.
 
-Date.rfc2822('Sat, 3 Feb 2001 00:00:00 +0000')     #=> #&lt;Date: 2001-02-03 ...>
+require 'date'
+
+d = Date::rfc822('Sat, 3 Feb 2001 00:00:00 +0000')
+p d   #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+
+d = DateTime::rfc822('Sat, 3 Feb 2001 00:00:00 +0000')
+p d   #=> #&lt;DateTime: 2001-02-03T00:00:00+00:00 ((2451944j,0s,0n),+0s,2299161j)>  
+
+:note see cm__rfc822.rb
+</pre>
+<pre>
+<h3>rfc2822(string='Mon, 1 Jan -4712 00:00:00 +0000'[, start=ITALY])</h3>
+rfc2822(string='Mon, 1 Jan -4712 00:00:00 +0000'[, start=ITALY]) → date
+
+  Creates a new Date object by parsing from a string according to some typical RFC 2822 
+formats.
+
+require 'date'
+d = Date.rfc2822('Sat, 3 Feb 2001 00:00:00 +0000')
+p d   #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+
+d = DateTime::rfc2822('Sat, 3 Feb 2001 00:00:00 +0000')
+p d   #=> #&lt;DateTime: 2001-02-03T00:00:00+00:00 ((2451944j,0s,0n),+0s,2299161j)>  
+
+:note see cm__rfc2822.rb
+</pre>
+<pre>  
+<h3>rfc3339(string='-4712-01-01T00:00:00+00:00'[, start=ITALY])</h3>
+rfc3339(string='-4712-01-01T00:00:00+00:00'[, start=ITALY]) → date
+
+  Creates a new Date object by parsing from a string according to some typical RFC 3339 
+formats.
+
+require 'date'
+
+d = Date::rfc3339(string)
+p d  #=> #&lt;Date: 2008-04-02 ((2454559j,0s,0n),+0s,2299161j)>
+
+d = DateTime::rfc3339(string)
+p d  #=> #&lt;DateTime: 2008-04-02T20:00:00+00:00 ((2454559j,72000s,0n),+0s,2299161j)>
+
+:note see cm__rfc3339.rb
+</pre>
+<pre>
 <h3>strptime([string='-4712-01-01'[, format='%F'[, start=ITALY]]])</h3>
 strptime([string='-4712-01-01'[, format='%F'[, start=ITALY]]]) → date
 
   Parses the given representation of date and time with the given template, and creates a date
 object. strptime does not support specification of flags and width unlike strftime.
 
-Date.strptime('2001-02-03', '%Y-%m-%d')            #=> #&lt;Date: 2001-02-03 ...>
-Date.strptime('03-02-2001', '%d-%m-%Y')            #=> #&lt;Date: 2001-02-03 ...>
-Date.strptime('2001-034', '%Y-%j')                 #=> #&lt;Date: 2001-02-03 ...>
-Date.strptime('2001-W05-6', '%G-W%V-%u')           #=> #&lt;Date: 2001-02-03 ...>
-Date.strptime('2001 04 6', '%Y %U %w')             #=> #&lt;Date: 2001-02-03 ...>
-Date.strptime('2001 05 6', '%Y %W %u')             #=> #&lt;Date: 2001-02-03 ...>
-Date.strptime('sat3feb01', '%a%d%b%y')             #=> #&lt;Date: 2001-02-03 ...>
+require 'date'
+
+p Date::strptime('2001-02-03', '%Y-%m-%d')            #=> #&lt;Date: 2001-02-03 ...>
+p Date::strptime('03-02-2001', '%d-%m-%Y')            #=> #&lt;Date: 2001-02-03 ...>
+p Date::strptime('2001-034', '%Y-%j')                 #=> #&lt;Date: 2001-02-03 ...>
+p Date::strptime('2001-W05-6', '%G-W%V-%u')           #=> #&lt;Date: 2001-02-03 ...>
+p Date::strptime('2001 04 6', '%Y %U %w')             #=> #&lt;Date: 2001-02-03 ...>
+p Date::strptime('2001 05 6', '%Y %W %u')             #=> #&lt;Date: 2001-02-03 ...>
+p Date::strptime('sat3feb01', '%a%d%b%y')             #=> #&lt;Date: 2001-02-03 ...>
+
+p DateTime::strptime('2001-02-03', '%Y-%m-%d')        #=> #&lt;DateTime: 2001-02-03 ...>
+p DateTime::strptime('03-02-2001', '%d-%m-%Y')        #=> #&lt;DateTime: 2001-02-03 ...>
+p DateTime::strptime('2001-034', '%Y-%j')             #=> #&lt;DateTime: 2001-02-03 ...>
+p DateTime::strptime('2001-W05-6', '%G-W%V-%u')       #=> #&lt;DateTime: 2001-02-03 ...>
+p DateTime::strptime('2001 04 6', '%Y %U %w')         #=> #&lt;DateTime: 2001-02-03 ...>
+p DateTime::strptime('2001 05 6', '%Y %W %u')         #=> #&lt;DateTime: 2001-02-03 ...>
+p DateTime::strptime('sat3feb01', '%a%d%b%y')         #=> #&lt;DateTime: 2001-02-03 ...>
+
+:note see cm__strptime.rb
+
 See also strptime(3) and strftime.
+</pre>
+<pre> 
 <h3>today([start=Date::ITALY])</h3>
 today([start=Date::ITALY]) → date
 today #=> #
 
   Creates a date object denoting the present day.
+  
+require 'date'
+
+p Date::today
+p DateTime::today #=> NoMethodError: private method `today' called for DateTime:Class
+
+:note see cm_today.rb
+</pre>
+<pre> 
 <h3>valid_civil?(year, month, mday[, start=Date::ITALY])</h3>
 valid_civil?(year, month, mday[, start=Date::ITALY]) → bool
 
   Returns true if the given calendar date is valid, and false if not.
 
-Date.valid_date?(2001,2,3)                         #=> true
-Date.valid_date?(2001,2,29)                        #=> false
+require 'date'
+
+p Date::valid_civil?(2001,2,3)                         #=> true
+p Date::valid_civil?(2001,2,29)                        #=> false
+
+p DateTime::valid_civil?(2001,2,3)                     #=> true
+p DateTime::valid_civil?(2001,2,29)                    #=> false
+
+:note see cm_valid_civil_bool.rb 
+
 See also jd and civil.
+</pre>
+<pre>
 <h3>valid_commercial?(cwyear, cweek, cwday[, start=Date::ITALY])</h3>
 valid_commercial?(cwyear, cweek, cwday[, start=Date::ITALY]) → bool
 
   Returns true if the given week date is valid, and false if not.
 
-Date.valid_commercial?(2001,5,6)                   #=> true
-Date.valid_commercial?(2001,5,8)                   #=> false
+require 'date'
+
+p Date::valid_commercial?(2001,5,6)                   #=> true
+p Date::valid_commercial?(2001,5,8)                   #=> false
+
+p DateTime::valid_commercial?(2001,5,6)               #=> true
+p DateTime::valid_commercial?(2001,5,8)               #=> false
+
+:note see cm_valid_commercial_bool.rb
+
 See also jd and commercial.
+</pre>
+<pre>
 <h3>valid_date?(year, month, mday[, start=Date::ITALY])</h3>
 valid_date?(year, month, mday[, start=Date::ITALY]) → bool
 
   Returns true if the given calendar date is valid, and false if not.
 
-Date.valid_date?(2001,2,3)                         #=> true
-Date.valid_date?(2001,2,29)                        #=> false
+require 'date'
+
+p Date::valid_date?(2001,2,3)                         #=> true
+p Date::valid_date?(2001,2,29)                        #=> false
+
+p DateTime::valid_date?(2001,2,3)                     #=> true
+p DateTime::valid_date?(2001,2,29)                    #=> false
+
+:note see cm_valid_date.rb
+
 See also jd and civil.
+</pre>
+<pre> 
 <h3>valid_jd?(jd[, start=Date::ITALY]) → bool</h3>
 valid_jd?(jd[, start=Date::ITALY]) → bool
 
   Just returns true. It’s nonsense, but is for symmetry.
 
-Date.valid_jd?(2451944)                            #=> true
+require 'date'
+
+p Date::valid_jd?(2451944)                            #=> true
+p DateTime::valid_jd?(2451944)                        #=> true
+
+:note see cm_valid_jd_bool.rb
+
 See also jd.
+</pre>
+<pre>
 <h3>valid_ordinal?(year, yday[, start=Date::ITALY])</h3>
 valid_ordinal?(year, yday[, start=Date::ITALY]) → bool
 
   Returns true if the given ordinal date is valid, and false if not.
 
-Date.valid_ordinal?(2001,34)                       #=> true
-Date.valid_ordinal?(2001,366)                      #=> false
+
+
+:note see cm_valid_ordinal_bool.rb
+
 See also jd and ordinal.
+</pre>
+<pre> 
 <h3>xmlschema(string='-4712-01-01'[, start=ITALY])</h3>
 xmlschema(string='-4712-01-01'[, start=ITALY]) → date
 
   Creates a new Date object by parsing from a string according to some typical XML Schema 
 formats.
 
-Date.xmlschema('2001-02-03')                       #=> #&lt;Date: 2001-02-03 ...>
+require 'date'
+
+p Date::xmlschema('2001-02-03')                       #=> #&lt;Date: 2001-02-03 ...> 
+p DateTime::xmlschema('2001-02-03')                   #=> #&lt;Date: 2001-02-03 ...>  
+
+:note see  cm__xmlschema.rb
 </pre>
 <pre>
 <h2>Public Instance Methods</h2>
@@ -567,6 +1020,8 @@ p Date.instance_methods(false).sort
  :thursday?, :to_date, :to_datetime, :to_s, :to_time, :tuesday?, 
  :upto, :wday, :wednesday?, :xmlschema, 
  :yday, :year]
+</pre>
+<pre>
 <h3>+</h3>
 d + other → date
 
@@ -577,7 +1032,10 @@ Date.new(2001,2,3) + 1                             #=> #&lt;Date: 2001-02-04 ...
 DateTime.new(2001,2,3) + Rational(1,2)             #=> #&lt;DateTime: 2001-02-03T12:00:00+00:00 ...>
 DateTime.new(2001,2,3) + Rational(-1,2)            #=> #&lt;DateTime: 2001-02-02T12:00:00+00:00 ...>
 DateTime.jd(0,12) + DateTime.new(2001,2,3).ajd     #=> #&lt;DateTime: 2001-02-03T00:00:00+00:00 ...>
+
 :note see im_plus.rb
+</pre>
+<pre>
 <h3>-</h3>
 d - other → date or rational
 
@@ -589,7 +1047,10 @@ Date.new(2001,2,3)     - 1                         #=> #&lt;Date: 2001-02-02 ...
 DateTime.new(2001,2,3) - Rational(1,2)             #=> #&lt;DateTime: 2001-02-02T12:00:00+00:00 ...>
 Date.new(2001,2,3)     - Date.new(2001)            #=> (33/1)
 DateTime.new(2001,2,3) - DateTime.new(2001,2,2,12) #=> (1/2)
+
 :note see im_minus.rb
+</pre>
+<pre>
 <h3><<</h3>                         
 d &lt;&lt; n → date
 
@@ -598,7 +1059,10 @@ d &lt;&lt; n → date
 Date.new(2001,2,3) << 1                            #=> #&lt;Date: 2001-01-03 ...>
 Date.new(2001,1,31) << 11                          #=> #&lt;Date: 2000-02-29 ...>
 Date.new(2001,2,3) << -1                           #=> #&lt;Date: 2001-03-03 ...>
+
 :note see im_lt_lt.rb
+</pre>
+<pre>
 <h3><=></h3>
 d <=> other → -1, 0, +1 or nil
 
@@ -610,8 +1074,12 @@ Date.new(2001,2,3) <=> Date.new(2001,2,3)          #=> 0
 Date.new(2001,2,3) <=> Date.new(2001,2,2)          #=> 1
 Date.new(2001,2,3) <=> Object.new                  #=> nil
 Date.new(2001,2,3) <=> Rational(4903887,2)         #=> 0
-See also Comparable.
+
 :note see im_compare.rb
+
+See also Comparable.
+</pre>
+<pre>
 <h3>===</h3>
 d === other → bool
 
@@ -622,7 +1090,10 @@ Date.new(2001,2,3)     === Date.new(2001,2,4)                    #=> false
 DateTime.new(2001,2,3) === DateTime.new(2001,2,3,12)             #=> true
 DateTime.new(2001,2,3) === DateTime.new(2001,2,3,0,0,0,'+24:00') #=> true
 DateTime.new(2001,2,3) === DateTime.new(2001,2,4,0,0,0,'+24:00') #=> false
+
 :note see im_eq_bool.rb
+</pre>
+<pre>
 <h3>>></h3>
 d >> n → date
 
@@ -631,7 +1102,10 @@ d >> n → date
 Date.new(2001,2,3) >> 1                            #=> #&lt;Date: 2001-03-03 ...>
 Date.new(2001,1,31) >> 1                           #=> #&lt;Date: 2001-02-28 ...>
 Date.new(2001,2,3) >> -2                           #=> #&lt;Date: 2000-12-03 ...>
+
 :note see im_gt_gt.rb
+</pre>
+<pre>
 <h3>ajd</h3>
 ajd → rational
 
@@ -640,6 +1114,8 @@ adjusted by the offset.
 
 DateTime.new(2001,2,3,4,5,6,'+7').ajd              #=> (11769328217/4800)
 DateTime.new(2001,2,2,14,5,6,'-7').ajd             #=> (11769328217/4800)
+</pre>
+<pre>
 <h3>amjd</h3>
 amjd → rational
 
@@ -648,6 +1124,8 @@ not adjusted by the offset.
 
 DateTime.new(2001,2,3,4,5,6,'+7').amjd             #=> (249325817/4800)
 DateTime.new(2001,2,2,14,5,6,'-7').amjd            #=> (249325817/4800)
+</pre>
+<pre>
 <h3>asctime</h3>
 asctime → string
 
@@ -655,25 +1133,33 @@ asctime → string
 equivalent to strftime(‘%c’).
 
 See also asctime(3) or ctime(3).
-<h3>ctime</h3>
+
+</pre>
+<pre><h3>ctime</h3>
 ctime → string
 
   Returns a string in asctime(3) format (but without “n0” at the end). This method is 
 equivalent to strftime(‘%c’).
 
 See also asctime(3) or ctime(3).
-<h3>cwday</h3>
+
+</pre>
+<pre><h3>cwday</h3>
 cwday → fixnum
 
   Returns the day of calendar week (1-7, Monday is 1).
 
 Date.new(2001,2,3).cwday                           #=> 6
+</pre>
+<pre>
 <h3>cweek</h3>
 cweek → fixnum
 
   Returns the calendar week number (1-53).
 
 Date.new(2001,2,3).cweek                           #=> 5
+</pre>
+<pre>
 <h3>cwyear</h3>
 cwyear → integer
 
@@ -681,35 +1167,49 @@ cwyear → integer
 
 Date.new(2001,2,3).cwyear                          #=> 2001
 Date.new(2000,1,1).cwyear                          #=> 1999
+</pre>
+<pre>
 <h3>day</h3>
 day → fixnum
 
   Returns the day of the month (1-31).
 
 Date.new(2001,2,3).mday                            #=> 3
+</pre>
+<pre>
 <h3>day_fraction</h3>
 day_fraction → rational
 
   Returns the fractional part of the day.
 
 DateTime.new(2001,2,3,12).day_fraction             #=> (1/2)
+</pre>
+<pre>
 <h3>downto(min){|date| ...}</h3>
 downto(min) → enumerator
 downto(min){|date| ...} → self
 
   This method is equivalent to step(min, -1){|date| …}.
+</pre>
+<pre>
 <h3>england</h3>
 england → date
 
   This method is equivalent to #new_start(Date::ENGLAND).
+</pre>
+<pre>
 <h3>friday?</h3>
 friday? → bool
 
   Returns true if the date is Friday.
+</pre>
+<pre>
 <h3>gregorian</h3>
 gregorian → date
 
   This method is equivalent to #new_start(Date::GREGORIAN).
+</pre>
+<pre>
 <h3>gregorian?</h3>
 gregorian? → bool
 
@@ -717,10 +1217,14 @@ gregorian? → bool
 
 Date.new(1582,10,15).gregorian?                    #=> true
 (Date.new(1582,10,15) - 1).gregorian?              #=> false
+</pre>
+<pre>
 <h3>httpdate</h3>
 httpdate → string
 
   This method is equivalent to strftime(‘%a, %d %b %Y %T GMT’). See also RFC 2616.
+</pre>
+<pre>
 <h3>inspect</h3>
 inspect → string
 
@@ -729,15 +1233,21 @@ inspect → string
 Date.new(2001,2,3).inspect     #=> "#&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>"
 d = DateTime.new(2001,2,3,4,5,6,'-7')
 puts d.inspect #=> "#&lt;DateTime: 2001-02-03T04:05:06-07:00 ((2451944j,39906s,0n),-25200s,2299161j)>"
+</pre>
+<pre>
 <h3>iso8601</h3>
 iso8601 → string
 xmlschema → string
 
   This method is equivalent to strftime(‘%F’).
+</pre>
+<pre>
 <h3>italy</h3>
 italy → date
 
   This method is equivalent to #new_start(Date::ITALY).
+</pre>
+<pre>
 <h3>jd</h3>
 jd → integer
 
@@ -746,16 +1256,22 @@ the local time.
 
 DateTime.new(2001,2,3,4,5,6,'+7').jd               #=> 2451944
 DateTime.new(2001,2,3,4,5,6,'-7').jd               #=> 2451944
+</pre>
+<pre>
 <h3>jisx0301</h3>
 jisx0301 → string
 
   Returns a string in a JIS X 0301 format.
 
 Date.new(2001,2,3).jisx0301                        #=> "H13.02.03"
+</pre>
+<pre>
 <h3>julian</h3>
 julian → date
 
   This method is equivalent to #new_start(Date::JULIAN).
+</pre>
+<pre>
 <h3>julian?</h3>
 julian? → bool
 
@@ -763,6 +1279,8 @@ julian? → bool
 
 Date.new(1582,10,15).julian?                       #=> false
 (Date.new(1582,10,15) - 1).julian?                 #=> true
+</pre>
+<pre>
 <h3>ld</h3>
 ld → integer
  
@@ -770,6 +1288,8 @@ ld → integer
 the local time.
 
 Date.new(2001,2,3).ld                              #=> 152784
+</pre>
+<pre>
 <h3>leap?</h3>
 leap? → bool
 
@@ -777,13 +1297,16 @@ leap? → bool
 
 Date.new(2000).leap?                               #=> true
 Date.new(2001).leap?                               #=> false
-
+</pre>
+<pre>
 <h3>mday</h3>
 mday → fixnum
 
   Returns the day of the month (1-31).
 
 Date.new(2001,2,3).mday                            #=> 3
+</pre>
+<pre>
 <h3>mjd</h3>
 mjd → integer
 
@@ -792,21 +1315,29 @@ offset as the local time.
 
 DateTime.new(2001,2,3,4,5,6,'+7').mjd              #=> 51943
 DateTime.new(2001,2,3,4,5,6,'-7').mjd              #=> 51943
+</pre>
+<pre>
 <h3>mon</h3>
 mon → fixnum
 
   Returns the month (1-12).
 
 Date.new(2001,2,3).mon                             #=> 2
+</pre>
+<pre>
 <h3>monday?</h3>
 monday? → bool
 
    Returns true if the date is Monday.
+</pre>
+<pre>
 <h3>month</h3>
 month → fixnum
 Returns the month (1-12).
 
 Date.new(2001,2,3).month                           #=> 2
+</pre>
+<pre>
 <h3>new_start([start=Date::ITALY])</h3>
 new_start([start=Date::ITALY]) → date
 
@@ -814,50 +1345,74 @@ new_start([start=Date::ITALY]) → date
 
 d = Date.new(1582,10,15)
 d.new_start(Date::JULIAN)                          #=> #&lt;Date: 1582-10-05 ...>
+</pre>
+<pre>
 <h3>next</h3>
 next → date
 
   Returns a date object denoting the following day.
+</pre>
+<pre>
 <h3>next_day([n=1])</h3>
 next_day([n=1]) → date
 
   This method is equivalent to d + n.
+</pre>
+<pre>
 <h3>next_month([n=1])</h3>
 next_month([n=1]) → date
 
   This method is equivalent to d >> n
+</pre>
+<pre>
 <h3>next_year([n=1])</h3>
 next_year([n=1]) → date
 
   This method is equivalent to d >> (n * 12)
+</pre>
+<pre>
 <h3>prev_day([n=1])</h3>
 prev_day([n=1]) → date
 
   This method is equivalent to d - n.
+</pre>
+<pre>
 <h3>prev_month([n=1])</h3>
 prev_month([n=1]) → date
 
   This method is equivalent to d << n
+</pre>
+<pre>
 <h3>prev_year([n=1])</h3>
 prev_year([n=1]) → date
 
   This method is equivalent to d << (n * 12)
+</pre>
+<pre>  
 <h3>rfc2822</h3>
 rfc2822 → string
 
   This method is equivalent to strftime(‘%a, %-d %b %Y %T %z’).
+</pre>
+<pre>
 <h3>rfc3339</h3>
 rfc3339 → string
 
   This method is equivalent to strftime(‘%FT%T%:z’).
+</pre>
+<pre>
 <h3>rfc822</h3>
 rfc822 → string
 
   This method is equivalent to strftime(‘%a, %-d %b %Y %T %z’).
+</pre>
+<pre>
 <h3>saturday?</h3>
 saturday? → bool
 
   Returns true if the date is Saturday.
+</pre>
+<pre>
 <h3>start</h3>
 start → float
 
@@ -865,6 +1420,8 @@ start → float
 
 Date.new(2001,2,3).start                           #=> 2299161.0
 Date.new(2001,2,3,Date::GREGORIAN).start           #=> -Infinity
+</pre>
+<pre>
 <h3>step(limit[, step=1]){|date| ...}</h3>
 step(limit[, step=1]) → enumerator
 step(limit[, step=1]){|date| ...} → self
@@ -873,6 +1430,8 @@ step(limit[, step=1]){|date| ...} → self
 date object.
 
 Date.new(2001).step(Date.new(2001,-1,-1)).select{|d| d.sunday?}.size   #=> 52
+</pre>
+<pre>
 <h3>strftime([format='%F'])</h3>
 strftime([format='%F']) → string
 
@@ -1039,27 +1598,40 @@ Various ISO 8601 formats:
   %Y-%jT%RZ        => 2007-323T08:37Z           Ordinal date and UTC of day (extended)
   %GW%V%uT%H%M%z   => 2007W471T0837-0600        Week date and local time and difference from UTC (basic)
   %G-W%V-%uT%R%:z  => 2007-W47-1T08:37-06:00    Week date and local time and difference from UTC (extended)
-See also strftime(3) and strptime.
+
+  See also strftime(3) and strptime.
+</pre>
+<pre>
 <h3>succ</h3>
 succ → date
 
   Returns a date object denoting the following day.
+</pre>
+<pre>
 <h3>sunday?</h3>
 sunday? → bool
 
   Returns true if the date is Sunday.
+</pre>
+<pre>
 <h3>thursday?</h3>
 thursday? → bool
 
   Returns true if the date is Thursday.
+</pre>
+<pre>
 <h3>to_date</h3>
 to_date → self
 
   Returns self;
+</pre>
+<pre>
 <h3>to_datetime</h3>
 to_datetime → datetime
 
   Returns a DateTime object which denotes self.
+</pre>
+<pre>
 <h3>to_s</h3>
 to_s → string
 
@@ -1067,40 +1639,56 @@ to_s → string
 (This method doesn’t use the expanded representations)
 
 Date.new(2001,2,3).to_s                            #=> "2001-02-03"
+</pre>
+<pre>
 <h3>to_time</h3>
 to_time → time
 
   Returns a Time object which denotes self.
+</pre>
+<pre>
 <h3>tuesday?</h3>
 tuesday? → bool
 
   Returns true if the date is Tuesday.
+</pre>
+<pre>
 <h3>upto(max){|date| ...}</h3>
 upto(max) → enumerator
 upto(max){|date| ...} → self
 
   This method is equivalent to step(max, 1){|date| …}.
+</pre>
+<pre>
 <h3>wday</h3>
 wday → fixnum
 
   Returns the day of week (0-6, Sunday is zero).
 
 Date.new(2001,2,3).wday                            #=> 6
+</pre>
+<pre>
 <h3>wednesday?</h3>
 wednesday? → bool
 
   Returns true if the date is Wednesday.
+</pre>
+<pre>
 <h3>xmlschema</h3>
 iso8601 → string
 xmlschema → string
 
   This method is equivalent to strftime(‘%F’).
+</pre>
+<pre>
 <h3>yday</h3>
 yday → fixnum
 
   Returns the day of the year (1-366).
 
 Date.new(2001,2,3).yday                            #=> 34
+</pre>
+<pre>
 <h3>year</h3>
 year → integer
 
