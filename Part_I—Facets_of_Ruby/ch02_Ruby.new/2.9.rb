@@ -5,20 +5,11 @@
 # courses, books, articles, and the like. Contact us if you are in doubt.
 # We make no guarantees that this code is fit for any purpose. 
 # Visit http://www.pragmaticprogrammer.com/titles/ruby4 for more book information.
-#---
-class BookInStock      
-  attr_reader   :isbn
-  attr_accessor :price
-  
-  def initialize(isbn, price)
-    @isbn  = isbn
-    @price = Float(price)
-  end  
-  # ...
-end
 
-book = BookInStock.new("isbn1", 33.80)
-puts "ISBN      = #{book.isbn}"
-puts "Price     = #{book.price}"
-book.price = book.price * 0.75        # discount price
-puts "New price = #{book.price}"
+#--- http://media.pragprog.com/titles/ruby4/code/intro/cmd_line.rb
+puts "You gave #{ARGV.size} arguments"
+p ARGV
+
+# $ ruby cmd_line.rb ant bee cat dog
+# You gave 4 arguments
+# ["ant", "bee", "cat", "dog"]

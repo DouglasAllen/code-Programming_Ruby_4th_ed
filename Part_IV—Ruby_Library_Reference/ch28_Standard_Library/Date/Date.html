@@ -116,7 +116,7 @@ appears, it just refers to “chronological modified Julian day number”, not t
 classes, this is so-called “mjd”.
 </pre>
 <pre>
-<h2>Date</h2>
+<h2>Date Public Class Methods</h2>
   A subclass of Object includes Comparable module, easily handles date.
 
 Date object is created with ::new, ::jd, ::ordinal, ::commercial, ::parse, ::strptime, 
@@ -130,13 +130,13 @@ p Date.public_methods(false).sort
  :rfc822, :strptime, :today, :valid_civil?, :valid_commercial?, :valid_date?, :valid_jd?, 
  :valid_ordinal?, :xmlschema]
 
-Date.new(2001,2,3)                                 #=> #&lt;Date: 2001-02-03 ((2451635j,0s,0n),+0s,2299161j)>
-Date.jd(2451944)                                   #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
-Date.ordinal(2001,34)                              #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
-Date.commercial(2001,5,6)                          #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
-Date.parse('2001-02-03')                           #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
-Date.strptime('03-02-2001', '%d-%m-%Y')            #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
-Time.new(2001,2,3).to_date                         #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,-Infj)>
+Date::new(2001,2,3)                                #=> #&lt;Date: 2001-02-03 ((2451635j,0s,0n),+0s,2299161j)>
+Date::jd(2451944)                                  #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+Date::ordinal(2001,34)                             #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+Date::commercial(2001,5,6)                         #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+Date::parse('2001-02-03')                          #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+Date::strptime('03-02-2001', '%d-%m-%Y')           #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+Time::new(2001,2,3).to_date                        #=> #&lt;Date: 2001-02-03 ((2451944j,0s,0n),+0s,-Infj)>
 
   All date objects are immutable; hence cannot modify themselves. The concept of this date object
 can be represented as a tuple of the day count, the offset and the day of calendar reform.
@@ -543,24 +543,35 @@ Date::JULIAN (the proleptic Julian calendar) can be specified as a day of calend
 
 require 'date'
 
-d = Date::civil(2000)
-p d  #=> #&lt;Date: 2000-01-01 ((2451545j,0s,0n),+0s,2299161j)>
+p Date::ITALY       #=> 2299161
+p Date::ENGLAND     #=> 2361222
+p Date::GREGORIAN   #=> #<Date::Infinity:0x126c554 @d=-1>
+p Date::JULIAN      #=> #<Date::Infinity:0x1367c5a @d=1>
 
-d = Date::civil(2000,2,3)
+d = Date.civil(-1)
+p d  #=> #&lt;Date: -0001-01-01 ((1720693j,0s,0n),+0s,2299161j)> 
+
+d = Date.civil(0)
+p d  #=> #&lt;Date: 0000-01-01 ((1721058j,0s,0n),+0s,2299161j)>
+
+d = Date.civil(1)
+p d  #=> #&lt;Date: 0001-01-01 ((1721424j,0s,0n),+0s,2299161j)> 
+
+d = Date.civil(2000,2,3)
 p d  #=> #&lt;Date: 2000-02-03 ((2451578j,0s,0n),+0s,2299161j)>
 
-d = Date::civil(2000,2,-1)
+d = Date.civil(2000,2,-1)
 p d  #=> #&lt;Date: 2001-02-28 ((2451969j,0s,0n),+0s,2299161j)>
 
-d = DateTime::civil(2000)
+d = DateTime.civil(2000)
 p d  #=> #&lt;DateTime: 2001-01-01T00:00:00+00:00 ((2451911j,0s,0n),+0s,2299161j)>
 
-d = DateTime::civil(2000,2,3)
+d = DateTime.civil(2000,2,3)
 p d  #=> #&lt;DateTime: 2001-02-03T00:00:00+00:00 ((2451944j,0s,0n),+0s,2299161j)>
 
-d = DateTime::civil(2000,2,-1)
-p d  #=> #&lt;DateTime: 2001-02-28T00:00:00+00:00 ((2451969j,0s,0n),+0s,2299161j)>                               
-
+d = DateTime.civil(2000,2,-1)
+p d  #=> #&lt;DateTime: 2001-02-28T00:00:00+00:00 ((2451969j,0s,0n),+0s,2299161j)>
+     
 :note see cm_civil.rb
 
 See also jd.
@@ -1028,10 +1039,16 @@ d + other → date
   Returns a date object pointing other days after self. The other should be a numeric value.
 If the other is float, assumes its precision is at most nanosecond.
 
-Date.new(2001,2,3) + 1                             #=> #&lt;Date: 2001-02-04 ...>
-DateTime.new(2001,2,3) + Rational(1,2)             #=> #&lt;DateTime: 2001-02-03T12:00:00+00:00 ...>
-DateTime.new(2001,2,3) + Rational(-1,2)            #=> #&lt;DateTime: 2001-02-02T12:00:00+00:00 ...>
-DateTime.jd(0,12) + DateTime.new(2001,2,3).ajd     #=> #&lt;DateTime: 2001-02-03T00:00:00+00:00 ...>
+require 'date'
+
+d = Date.new(2000, 3, 31)
+puts d + 3                                           #=> 2000-04-03
+
+p Date.new(2001,2,3) + 1                             #=> #&lt;Date: 2001-02-04 ...>
+p DateTime.new(2001,2,3) + Rational(1,2)             #=> #&lt;DateTime: 2001-02-03T12:00:00+00:00 ...>
+p DateTime.new(2001,2,3) + Rational(-1,2)            #=> #&lt;DateTime: 2001-02-02T12:00:00+00:00 ...>
+p DateTime.jd(0,12) + DateTime.new(2001,2,3).ajd     #=> #&lt;DateTime: 2001-02-03T00:00:00+00:00 ...>
+p DateTime.jd(0,12) + 4712 * 365.25                  #=> #&lt;DateTime: 0000-01-01T12:00:00+00:00 ...>
 
 :note see im_plus.rb
 </pre>
@@ -1043,10 +1060,12 @@ d - other → date or rational
 a numeric value, returns a date object pointing other days before self. If the other is float,
 assumes its precision is at most nanosecond.
 
-Date.new(2001,2,3)     - 1                         #=> #&lt;Date: 2001-02-02 ...>
-DateTime.new(2001,2,3) - Rational(1,2)             #=> #&lt;DateTime: 2001-02-02T12:00:00+00:00 ...>
-Date.new(2001,2,3)     - Date.new(2001)            #=> (33/1)
-DateTime.new(2001,2,3) - DateTime.new(2001,2,2,12) #=> (1/2)
+require 'date'
+
+p Date.new(2001,2,3)     - 1                         #=> #&lt;Date: 2001-02-02 ...>
+p DateTime.new(2001,2,3) - Rational(1,2)             #=> #&lt;DateTime: 2001-02-02T12:00:00+00:00 ...>
+p Date.new(2001,2,3)     - Date.new(2001)            #=> (33/1)
+p DateTime.new(2001,2,3) - DateTime.new(2001,2,2,12) #=> (1/2)
 
 :note see im_minus.rb
 </pre>
@@ -1056,9 +1075,15 @@ d &lt;&lt; n → date
 
   Returns a date object pointing n months before self. The n should be a numeric value.
 
-Date.new(2001,2,3) << 1                            #=> #&lt;Date: 2001-01-03 ...>
-Date.new(2001,1,31) << 11                          #=> #&lt;Date: 2000-02-29 ...>
-Date.new(2001,2,3) << -1                           #=> #&lt;Date: 2001-03-03 ...>
+require 'date'
+
+p Date.new(2001,2,3)  << 1                 #=> #&lt;Date: 2001-01-03 ...>
+p Date.new(2001,1,31) << 11                #=> #&lt;Date: 2000-02-29 ...>
+p Date.new(2001,2,3)  << -1                #=> #&lt;Date: 2001-03-03 ...>
+
+p DateTime.new(2001,2,3)  << 1             #=> #&lt;DateTime: 2001-01-03T00:00:00+00:00 ...>                       
+p DateTime.new(2001,1,31) << 11            #=> #&lt;DateTime: 2000-02-29T00:00:00+00:00 ...>                      
+p DateTime.new(2001,2,3)  << -1            #=> #&lt;DateTime: 2001-03-03T00:00:00+00:00 ...>           
 
 :note see im_lt_lt.rb
 </pre>
@@ -1069,11 +1094,19 @@ d <=> other → -1, 0, +1 or nil
   Compares the two dates and returns -1, zero, 1 or nil. The other should be a date object 
 or a numeric value as an astronomical Julian day number.
 
-Date.new(2001,2,3) <=> Date.new(2001,2,4)          #=> -1
-Date.new(2001,2,3) <=> Date.new(2001,2,3)          #=> 0
-Date.new(2001,2,3) <=> Date.new(2001,2,2)          #=> 1
-Date.new(2001,2,3) <=> Object.new                  #=> nil
-Date.new(2001,2,3) <=> Rational(4903887,2)         #=> 0
+require 'date'
+
+p Date.new(2001,2,3) <=> Date.new(2001,2,4)          #=> -1
+p Date.new(2001,2,3) <=> Date.new(2001,2,3)          #=> 0
+p Date.new(2001,2,3) <=> Date.new(2001,2,2)          #=> 1
+p Date.new(2001,2,3) <=> Object.new                  #=> nil
+p Date.new(2001,2,3) <=> Rational(4903887,2)         #=> 0
+
+p DateTime.new(2001,2,3) <=> DateTime.new(2001,2,4)  #=> -1
+p DateTime.new(2001,2,3) <=> DateTime.new(2001,2,3)  #=> 0
+p DateTime.new(2001,2,3) <=> DateTime.new(2001,2,2)  #=> 1
+p DateTime.new(2001,2,3) <=> Object.new              #=> nil
+p DateTime.new(2001,2,3) <=> Rational(4903887,2)     #=> 0
 
 :note see im_compare.rb
 
@@ -1085,13 +1118,27 @@ d === other → bool
 
   Returns true if they are the same day.
 
-Date.new(2001,2,3)     === Date.new(2001,2,3)                    #=> true
-Date.new(2001,2,3)     === Date.new(2001,2,4)                    #=> false
-DateTime.new(2001,2,3) === DateTime.new(2001,2,3,12)             #=> true
-DateTime.new(2001,2,3) === DateTime.new(2001,2,3,0,0,0,'+24:00') #=> true
-DateTime.new(2001,2,3) === DateTime.new(2001,2,4,0,0,0,'+24:00') #=> false
+require 'date'
 
-:note see im_eq_bool.rb
+p Date.new(2001,2,3)     === Date.new(2001,2,3)                      #=> true
+p Date.new(2001,2,3)     === Date.new(2001,2,4)                      #=> false
+p DateTime.new(2001,2,3) === DateTime.new(2001,2,3,12)               #=> true
+p DateTime.new(2001,2,3) === DateTime.new(2001,2,3,0,0,0,'+24:00')   #=> true
+p DateTime.new(2001,2,3) === DateTime.new(2001,2,4,0,0,0,'+24:00')   #=> false
+
+p Date.new(2001,2,3)     == Date.new(2001,2,3)                       #=> true
+p Date.new(2001,2,3)     == Date.new(2001,2,4)                       #=> false
+p DateTime.new(2001,2,3) == DateTime.new(2001,2,3,12)                #=> false
+p DateTime.new(2001,2,3) == DateTime.new(2001,2,3,0,0,0,'+24:00')    #=> false
+p DateTime.new(2001,2,3) == DateTime.new(2001,2,4,0,0,0,'+24:00')    #=> false
+
+p Date.new(2001,2,3).eql?      Date.new(2001,2,3)                    #=> true
+p Date.new(2001,2,3).eql?      Date.new(2001,2,4)                    #=> false
+p DateTime.new(2001,2,3).eql?  DateTime.new(2001,2,3,12)             #=> false
+p DateTime.new(2001,2,3).eql?  DateTime.new(2001,2,3,0,0,0,'+24:00') #=> false
+p DateTime.new(2001,2,3).eql?  DateTime.new(2001,2,4,0,0,0,'+24:00') #=> true
+
+:note see im_eql_bool.rb
 </pre>
 <pre>
 <h3>>></h3>
@@ -1099,9 +1146,15 @@ d >> n → date
 
   Returns a date object pointing n months after self. The n should be a numeric value.
 
-Date.new(2001,2,3) >> 1                            #=> #&lt;Date: 2001-03-03 ...>
-Date.new(2001,1,31) >> 1                           #=> #&lt;Date: 2001-02-28 ...>
-Date.new(2001,2,3) >> -2                           #=> #&lt;Date: 2000-12-03 ...>
+require 'date'
+
+p Date.new(2001,2,3) >> 1              #=> #&lt;Date: 2001-03-03 ...>
+p Date.new(2001,1,31) >> 1             #=> #&lt;Date: 2001-02-28 ...>
+p Date.new(2001,2,3) >> -2             #=> #&lt;Date: 2000-12-03 ...>
+
+p DateTime.new(2001,2,3)  >> 1         #=> #&lt;Date: 2001-03-03T00:00:00+00:00 ...> 
+p DateTime.new(2001,1,31) >> 1         #=> #&lt;Date: 2001-02-28T00:00:00+00:00 ...>
+p DateTime.new(2001,2,3)  >> -2        #=> #&lt;Date: 2000-12-03T00:00:00+00:00 ...>
 
 :note see im_gt_gt.rb
 </pre>
@@ -1112,8 +1165,15 @@ ajd → rational
   Returns the astronomical Julian day number. This is a fractional number, which is not 
 adjusted by the offset.
 
-DateTime.new(2001,2,3,4,5,6,'+7').ajd              #=> (11769328217/4800)
-DateTime.new(2001,2,2,14,5,6,'-7').ajd             #=> (11769328217/4800)
+require 'date'
+
+p Date.new(2001,2,3).ajd                           #=> (4903887/2)
+p Date.new(2001,2,2).ajd                           #=> (4903885/2)
+
+p DateTime.new(2001,2,3,4,5,6,'+7').ajd            #=> (11769328217/4800)
+p DateTime.new(2001,2,2,14,5,6,'-7').ajd           #=> (11769328217/4800)
+
+:note see im_ajd.rb
 </pre>
 <pre>
 <h3>amjd</h3>
@@ -1122,8 +1182,15 @@ amjd → rational
   Returns the astronomical modified Julian day number. This is a fractional number, which is
 not adjusted by the offset.
 
-DateTime.new(2001,2,3,4,5,6,'+7').amjd             #=> (249325817/4800)
-DateTime.new(2001,2,2,14,5,6,'-7').amjd            #=> (249325817/4800)
+require 'date'
+
+p Date.new(2001,2,3).amjd                        #=> (51943/1)
+p Date.new(2001,2,2).amjd                        #=> (51942/1)
+
+p DateTime.new(2001,2,3,4,5,6,'+7').amjd         #=> (249325817/4800)
+p DateTime.new(2001,2,2,14,5,6,'-7').amjd        #=> (249325817/4800)
+
+:note see im_amjd.rb
 </pre>
 <pre>
 <h3>asctime</h3>
@@ -1132,8 +1199,17 @@ asctime → string
   Returns a string in asctime(3) format (but without “n0” at the end). This method is 
 equivalent to strftime(‘%c’).
 
-See also asctime(3) or ctime(3).
+require 'date'
 
+p Date.new(2001,2,3).asctime                     #=> "Sat Feb  3 00:00:00 2001"
+p Date.new(2001,2,2).asctime                     #=> "Fri Feb  2 00:00:00 2001"
+
+p DateTime.new(2001,2,3,4,5,6,'+7').asctime      #=> "Sat Feb  3 04:05:06 2001"
+p DateTime.new(2001,2,2,14,5,6,'-7').asctime     #=> "Fri Feb  2 14:05:06 2001"
+
+:note see im_asctime.rb
+
+See also asctime(3) or ctime(3).
 </pre>
 <pre><h3>ctime</h3>
 ctime → string
@@ -1141,15 +1217,29 @@ ctime → string
   Returns a string in asctime(3) format (but without “n0” at the end). This method is 
 equivalent to strftime(‘%c’).
 
-See also asctime(3) or ctime(3).
+require 'date'
 
+p Date.new(2001,2,3).ctime                     #=> "Sat Feb  3 00:00:00 2001"
+p Date.new(2001,2,2).ctime                     #=> "Fri Feb  2 00:00:00 2001"
+
+p DateTime.new(2001,2,3,4,5,6,'+7').ctime      #=> "Sat Feb  3 04:05:06 2001"
+p DateTime.new(2001,2,2,14,5,6,'-7').ctime     #=> "Fri Feb  2 14:05:06 2001"
+
+:note see im_ctime.rb
+
+See also asctime(3) or ctime(3).
 </pre>
 <pre><h3>cwday</h3>
 cwday → fixnum
 
   Returns the day of calendar week (1-7, Monday is 1).
 
-Date.new(2001,2,3).cwday                           #=> 6
+require 'date'
+
+p Date.new(2001,2,3).cwday                       #=> 6
+p DateTime.new(2001,2,3).cwday                   #=> 6
+
+:note see im_cwday.rb
 </pre>
 <pre>
 <h3>cweek</h3>
@@ -1157,7 +1247,12 @@ cweek → fixnum
 
   Returns the calendar week number (1-53).
 
-Date.new(2001,2,3).cweek                           #=> 5
+require 'date'
+
+p Date.new(2001,2,3).cweek                         #=> 5
+p DateTime.new(2001,2,3).cweek                     #=> 5
+
+:note see im_cweek.rb
 </pre>
 <pre>
 <h3>cwyear</h3>
@@ -1165,8 +1260,15 @@ cwyear → integer
 
   Returns the calendar week based year.
 
-Date.new(2001,2,3).cwyear                          #=> 2001
-Date.new(2000,1,1).cwyear                          #=> 1999
+require 'date'
+
+p Date.new(2001,2,3).cwyear                          #=> 2001
+p Date.new(2000,1,1).cwyear                          #=> 1999
+
+p DateTime.new(2001,2,3).cwyear                      #=> 2001
+p DateTime.new(2000,1,1).cwyear                      #=> 1999
+
+:note see im_cwyear.rb
 </pre>
 <pre>
 <h3>day</h3>
@@ -1174,7 +1276,12 @@ day → fixnum
 
   Returns the day of the month (1-31).
 
-Date.new(2001,2,3).mday                            #=> 3
+require 'date'
+
+p Date.new(2001,2,3).day                            #=> 3
+p DateTime.new(2001,2,3).day                        #=> 3
+
+:note see im_day.rb
 </pre>
 <pre>
 <h3>day_fraction</h3>
@@ -1182,7 +1289,12 @@ day_fraction → rational
 
   Returns the fractional part of the day.
 
-DateTime.new(2001,2,3,12).day_fraction             #=> (1/2)
+require 'date'
+
+p Date.new(2001,2,3).day_fraction             #=> (0/1)
+p DateTime.new(2001,2,3,12).day_fraction      #=> (1/2)
+
+:note see im_day_fraction.rb
 </pre>
 <pre>
 <h3>downto(min){|date| ...}</h3>
@@ -1190,12 +1302,36 @@ downto(min) → enumerator
 downto(min){|date| ...} → self
 
   This method is equivalent to step(min, -1){|date| …}.
+  
+require 'date'
+
+d = Date.new(2014,5,21)
+jd = Date.new(2014,5,21).jd - 3
+d.downto(jd) {|d| puts d}             #=> 2014-05-21
+                                      #=> 2014-05-20
+                                      #=> 2014-05-19    
+                                      
+:note see im_downto.rb
+</pre>
+<pre>
+<h3>dt</h3>
+dt → date
+
+  This method is equivalent to #new_start(Date::ENGLAND).
+
+require 'date'
+
+
 </pre>
 <pre>
 <h3>england</h3>
 england → date
 
   This method is equivalent to #new_start(Date::ENGLAND).
+
+require 'date'
+
+p Date.england     #=> 2361222
 </pre>
 <pre>
 <h3>friday?</h3>

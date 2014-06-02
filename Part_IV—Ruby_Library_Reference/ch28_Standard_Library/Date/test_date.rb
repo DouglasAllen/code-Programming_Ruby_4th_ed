@@ -7,31 +7,33 @@ class DateTimeSub < DateTime; end
 class TestDate < Test::Unit::TestCase
 
   def test__const
-    assert_nil(Date::MONTHNAMES[0])
-    assert_equal('January', Date::MONTHNAMES[1])
-    assert_equal(13, Date::MONTHNAMES.size)
-    assert_equal('Sunday', Date::DAYNAMES[0])
-    assert_equal(7, Date::DAYNAMES.size)
-
+    assert_equal(7, Date::ABBR_DAYNAMES.size)
+    assert_equal('Sun', Date::ABBR_DAYNAMES[0])    
+    assert(Date::ABBR_DAYNAMES.frozen?)
+    assert(Date::ABBR_DAYNAMES[0].frozen?)
+    
+    assert_equal(13, Date::ABBR_MONTHNAMES.size)
     assert_nil(Date::ABBR_MONTHNAMES[0])
     assert_equal('Jan', Date::ABBR_MONTHNAMES[1])
-    assert_equal(13, Date::ABBR_MONTHNAMES.size)
-    assert_equal('Sun', Date::ABBR_DAYNAMES[0])
-    assert_equal(7, Date::ABBR_DAYNAMES.size)
-
+    assert(Date::ABBR_MONTHNAMES.frozen?)
+    assert(Date::ABBR_MONTHNAMES[1].frozen?)    
+    
+    assert_equal(7, Date::DAYNAMES.size)
+    assert_equal('Sunday', Date::DAYNAMES[0])
+    assert(Date::DAYNAMES.frozen?)
+    assert(Date::DAYNAMES[0].frozen?)
+    
+    assert_equal(13, Date::MONTHNAMES.size)    
+    assert_nil(Date::MONTHNAMES[0])    
+    assert_equal('January', Date::MONTHNAMES[1])
     assert(Date::MONTHNAMES.frozen?)
     assert(!Date::MONTHNAMES[0].frozen?)
     assert(Date::MONTHNAMES[1].frozen?)
-    assert(Date::DAYNAMES.frozen?)
-    assert(Date::DAYNAMES[0].frozen?)
-
-    assert(Date::ABBR_MONTHNAMES.frozen?)
-    assert(Date::ABBR_MONTHNAMES[1].frozen?)
-    assert(Date::ABBR_DAYNAMES.frozen?)
-    assert(Date::ABBR_DAYNAMES[0].frozen?)
+    
   end
 
   def test_sub
+  
     d = DateSub.new
     dt = DateTimeSub.new
 
@@ -41,9 +43,9 @@ class TestDate < Test::Unit::TestCase
     assert_instance_of(DateSub, DateSub.today)
     assert_instance_of(DateTimeSub, DateTimeSub.now)
 
-    assert_equal('#<DateSub: -4712-01-01 (-1/2,0,2299161)>', d.inspect)
+    assert_equal('#<DateSub: -4712-01-01 ((0j,0s,0n),+0s,2299161j)>', d.inspect)
     assert_equal('-4712-01-01', d.to_s)
-    assert_equal('#<DateTimeSub: -4712-01-01T00:00:00+00:00 (-1/2,0,2299161)>', dt.inspect)
+    assert_equal('#<DateTimeSub: -4712-01-01T00:00:00+00:00 ((0j,0s,0n),+0s,2299161j)>', dt.inspect)
     assert_equal('-4712-01-01T00:00:00+00:00', dt.to_s)
 
     d2 = d + 1
@@ -95,6 +97,7 @@ class TestDate < Test::Unit::TestCase
     dt2 = Marshal.load(s)
     assert_equal(dt2, dt)
     assert_instance_of(DateTimeSub, dt2)
+    
   end
 
   def test_eql_p
